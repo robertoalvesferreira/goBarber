@@ -134,7 +134,11 @@ class AppointmentController {
         error: 'You can only cancel appointments 2 hours in advance',
       });
     }
-
+    if (appointment.canceled_at !== null) {
+      return res.status(401).json({
+        error: 'You already canceled ',
+      });
+    }
     appointment.canceled_at = new Date();
     await appointment.save();
     await Queue.add(CancellationMail.key, { appointment });
